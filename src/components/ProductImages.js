@@ -1,9 +1,37 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React, { useState } from 'react';
+import { useEffect } from 'react/cjs/react.development';
+import styled from 'styled-components';
 
-const ProductImages = () => {
-  return <h4>product images</h4>
-}
+const ProductImages = ({ images = [{ url: '' }] }) => {
+  const [main, setMain] = useState(images[0]);
+  // console.log(images); // Log an array of objects with image properties
+
+  // NOTE: For some reason main image does not load on page reload, so I have to add useEffect to force displaying of main image
+  useEffect(() => {
+    if (images[0].url !== '') {
+      setMain(images[0]);
+    }
+  }, [images[0].url]);
+
+  return (
+    <Wrapper>
+      <img className='main' src={main.url} alt='Main cover' />
+      <div className='gallery'>
+        {images.map((image, index) => {
+          return (
+            <img
+              className={`${image.url === main.url ? 'active' : null}`}
+              src={image.url}
+              alt={image.filename}
+              key={index}
+              onClick={() => setMain(images[index])}
+            />
+          );
+        })}
+      </div>
+    </Wrapper>
+  );
+};
 
 const Wrapper = styled.section`
   .main {
@@ -48,6 +76,6 @@ const Wrapper = styled.section`
       }
     }
   }
-`
+`;
 
-export default ProductImages
+export default ProductImages;
