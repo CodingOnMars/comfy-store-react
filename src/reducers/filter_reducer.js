@@ -30,6 +30,50 @@ const filter_reducer = (state, action) => {
     return { ...state, sort: action.payload };
   }
 
+  if (action.type === SORT_PRODUCTS) {
+    const { sort, filtered_products } = state;
+
+    let tempProducts = [...filtered_products];
+
+    // LINK: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    if (sort === 'price-lowest') {
+      /* Without sort()
+      tempProducts = tempProducts.sort((lowestPrice, highestPrice) => {
+        if (lowestPrice < highestPrice) {
+          return -1;
+        }
+        if (lowestPrice > highestPrice) {
+          return 1;
+        }
+        return 0;
+      });
+      */
+      // Using sort()
+      tempProducts = tempProducts.sort(
+        (lowestPrice, highestPrice) => lowestPrice.price - highestPrice.price
+      );
+    }
+    if (sort === 'price-highest') {
+      tempProducts = tempProducts.sort(
+        (lowestPrice, highestPrice) => highestPrice.price - lowestPrice.price
+      );
+    }
+
+    // LINK: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
+    if (sort === 'name-a') {
+      tempProducts = tempProducts.sort((firstItem, nextItem) => {
+        return firstItem.name.localeCompare(nextItem.name);
+      });
+    }
+    if (sort === 'name-z') {
+      tempProducts = tempProducts.sort((firstItem, nextItem) => {
+        return nextItem.name.localeCompare(firstItem);
+      });
+    }
+
+    return { ...state, filtered_products: tempProducts };
+  }
+
   throw new Error(`No Matching "${action.type}" - action type`);
 };
 
